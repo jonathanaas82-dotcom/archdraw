@@ -1,0 +1,16 @@
+.container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.coords {
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+  font-size: 11px;
+  color: #888;
+  pointer-events: none;
+  font-family: 'Consolas', monospace;
+}

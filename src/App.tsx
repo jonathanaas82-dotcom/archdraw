@@ -1,19 +1,24 @@
 import React from 'react'
+import Toolbar from './components/tools/Toolbar'
+import DrawingCanvas from './components/canvas/DrawingCanvas'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import styles from './App.module.css'
 
 export default function App(): React.ReactElement {
+  useKeyboardShortcuts()
+
   return (
     <div className={styles.app}>
-      <div className={styles.toolbar}>
+      <div className={styles.titlebar}>
         <span className={styles.logo}>Archdraw</span>
+        <span className={styles.subtitle}>Byggtegninger</span>
       </div>
       <div className={styles.workspace}>
-        <div className={styles.canvas}>
-          <p>Canvas kommer her — Fase 1</p>
-        </div>
+        <Toolbar />
+        <DrawingCanvas />
       </div>
       <div className={styles.statusbar}>
-        Klar
+        Klar — Bruk scrollhjul for zoom, midtknapp for pan
       </div>
     </div>
   )

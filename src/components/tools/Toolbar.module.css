@@ -1,0 +1,44 @@
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  width: 90px;
+  background: #252526;
+  border-right: 1px solid #3e3e3e;
+  padding: 8px 4px;
+  gap: 2px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.divider {
+  height: 1px;
+  background: #3e3e3e;
+  margin: 6px 4px;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #ccc;
+  font-size: 11px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.btn:hover {
+  background: #2d2d2d;
+  color: #fff;
+}
+
+.btn.active {
+  background: #094771;
+  border-color: #007acc;
+  color: #fff;
+}
