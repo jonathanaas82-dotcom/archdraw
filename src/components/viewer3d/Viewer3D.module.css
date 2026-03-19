@@ -1,0 +1,16 @@
+.container {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #111;
+}
+
+.hint {
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  font-size: 10px;
+  color: #555;
+  pointer-events: none;
+  font-family: 'Consolas', monospace;
+}

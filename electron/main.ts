@@ -1,10 +1,13 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { autoUpdater } from 'electron-updater'
+import { registerFileHandlers } from './ipc/file-handlers'
+import { registerExportHandlers } from './ipc/export-handlers'
+import { registerUpdateHandlers } from './ipc/update-handlers'
 
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   const win = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -24,10 +27,16 @@ function createWindow(): void {
   } else {
     win.loadFile(path.join(__dirname, '../renderer/index.html'))
   }
+
+  return win
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  const win = createWindow()
+
+  registerFileHandlers()
+  registerExportHandlers()
+  registerUpdateHandlers(win)
 
   if (!isDev) {
     autoUpdater.checkForUpdatesAndNotify()

@@ -5,9 +5,11 @@ import GridLayer from './GridLayer'
 import WallLayer from './WallLayer'
 import DoorLayer from './DoorLayer'
 import WindowLayer from './WindowLayer'
+import DimensionLayer from './DimensionLayer'
 import WallTool from '../tools/WallTool'
 import DoorTool from '../tools/DoorTool'
 import WindowTool from '../tools/WindowTool'
+import DimensionTool from '../tools/DimensionTool'
 import WallTypeDialog from '../panels/WallTypeDialog'
 import { useViewStore } from '../../store/viewStore'
 import { useToolStore } from '../../store/toolStore'
@@ -153,6 +155,7 @@ export default function DrawingCanvas(): React.ReactElement {
         <WallLayer />
         <DoorLayer />
         <WindowLayer />
+        <DimensionLayer />
         {activeTool === 'wall' && (
           <WallTool
             onRequestDialog={handleRequestDialog}
@@ -162,6 +165,7 @@ export default function DrawingCanvas(): React.ReactElement {
         )}
         {activeTool === 'door' && <DoorTool />}
         {activeTool === 'window' && <WindowTool />}
+        {activeTool === 'dimension' && <DimensionTool />}
       </Stage>
 
       <WallTypeDialog

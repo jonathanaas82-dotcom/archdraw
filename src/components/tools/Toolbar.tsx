@@ -2,6 +2,7 @@ import React from 'react'
 import { useToolStore } from '../../store/toolStore'
 import { useViewStore } from '../../store/viewStore'
 import { ToolType } from '../../types/tools'
+import { serializeProject, deserializeProject } from '../../utils/serialization'
 import styles from './Toolbar.module.css'
 
 const TOOLS: { id: ToolType; label: string; shortcut: string }[] = [
@@ -16,6 +17,28 @@ const TOOLS: { id: ToolType; label: string; shortcut: string }[] = [
 export default function Toolbar(): React.ReactElement {
   const { activeTool, setTool } = useToolStore()
   const { showGrid, snapToGrid, toggleGrid, toggleSnap } = useViewStore()
+
+  const handleSave = async () => {
+    const data = JSON.stringify(serializeProject('Mitt prosjekt'), null, 2)
+    await window.electronAPI.saveFile(data, 'prosjekt.archdraw')
+  }
+
+  const handleOpen = async () => {
+    const result = await window.electronAPI.openFile()
+    if (!result) return
+    try {
+      const file = JSON.parse(result.content)
+      deserializeProject(file)
+    } catch (e) {
+      console.error('Kunne ikke åpne fil:', e)
+    }
+  }
+
+  // PNG-eksport requires access to the Konva Stage ref from DrawingCanvas.
+  // The stage will be wired via a global ref in a future iteration.
+  const handleExportPng = async () => {
+    console.log('PNG-eksport: kobles til Stage i neste iterasjon')
+  }
 
   return (
     <div className={styles.toolbar}>
@@ -48,6 +71,20 @@ export default function Toolbar(): React.ReactElement {
           title="Snap til grid (S)"
         >
           Snap
+        </button>
+      </div>
+
+      <div className={styles.divider} />
+
+      <div className={styles.group}>
+        <button className={styles.btn} onClick={handleSave} title="Lagre prosjekt (Ctrl+S)">
+          Lagre
+        </button>
+        <button className={styles.btn} onClick={handleOpen} title="Åpne prosjekt (Ctrl+O)">
+          Åpne
+        </button>
+        <button className={styles.btn} onClick={handleExportPng} title="Eksporter PNG">
+          PNG
         </button>
       </div>
     </div>

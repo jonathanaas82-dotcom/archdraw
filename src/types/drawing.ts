@@ -40,4 +40,12 @@ export interface WindowElement extends BaseElement {
   sillHeightMm: number    // karmstokkshøyde fra gulv, standard 900mm
 }
 
-export type DrawingElement = WallElement | DoorElement | WindowElement
+export interface DimensionElement extends BaseElement {
+  type: 'dimension'
+  startPoint: Point2D
+  endPoint: Point2D
+  offsetMm: number       // hvor langt ut målpilen er fra linja, default 300mm
+  textOverride: string | null  // null = auto-beregnet
+}
+
+export type DrawingElement = WallElement | DoorElement | WindowElement | DimensionElement

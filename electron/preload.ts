@@ -1,9 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Fil-operasjoner (utvides i Fase 1)
   openFile: () => ipcRenderer.invoke('dialog:openFile'),
-  saveFile: (data: string) => ipcRenderer.invoke('dialog:saveFile', data),
-  // App-info
+  saveFile: (data: string, name?: string) => ipcRenderer.invoke('dialog:saveFile', data, name),
+  savePng: (dataUrl: string, name?: string) => ipcRenderer.invoke('export:savePng', dataUrl, name),
   getVersion: () => ipcRenderer.invoke('app:getVersion'),
 })
