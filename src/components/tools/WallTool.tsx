@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Layer, Line, Circle, Text } from 'react-konva'
+import { Layer, Line, Circle, Text, Rect } from 'react-konva'
 import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useWallStore } from '../../store/wallStore'
@@ -140,8 +140,8 @@ export default function WallTool({ onRequestDialog, dialogConfirmed, onDialogHan
       onMouseMove={handleMouseMove}
       onContextMenu={handleRightClick}
     >
-      {/* Transparent sentinel so the layer receives events */}
-      <Line points={[0, 0]} opacity={0} />
+      {/* Full-canvas hit area so the layer receives all mouse events */}
+      <Rect x={-100000} y={-100000} width={200000} height={200000} fill="transparent" />
 
       {showPreview && toolState.startPoint && toolState.currentPoint && previewWallType && (
         <>

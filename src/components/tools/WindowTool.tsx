@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { Layer, Circle } from 'react-konva'
+import { Layer, Rect } from 'react-konva'
 import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useViewStore } from '../../store/viewStore'
@@ -46,7 +46,7 @@ export default function WindowTool(): React.ReactElement {
   return (
     <Layer onMouseDown={handleMouseDown}>
       {/* Invisible hit target covering the full layer */}
-      <Circle x={0} y={0} radius={0} opacity={0} />
+      <Rect x={-100000} y={-100000} width={200000} height={200000} fill="transparent" />
     </Layer>
   )
 }

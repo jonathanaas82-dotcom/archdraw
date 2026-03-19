@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react'
-import { Layer, Line, Circle } from 'react-konva'
+import { Layer, Line, Circle, Rect } from 'react-konva'
 import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useViewStore } from '../../store/viewStore'
@@ -79,7 +79,7 @@ export default function DimensionTool(): React.ReactElement {
   return (
     <Layer onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onContextMenu={handleRightClick}>
       {/* Invisible full-canvas hit area so mouse events reach the layer even on empty space */}
-      <Circle x={0} y={0} radius={0} opacity={0} />
+      <Rect x={-100000} y={-100000} width={200000} height={200000} fill="transparent" />
       {showPreview && startPoint && currentPoint && (
         <>
           <Line
