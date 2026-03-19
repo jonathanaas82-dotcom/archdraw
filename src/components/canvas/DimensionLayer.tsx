@@ -30,8 +30,7 @@ function DimensionShape({ dim }: DimensionShapeProps): React.ReactElement {
   const extFactor = 1.2
 
   const distMm = Math.round(distance(s, e))
-  const distM = (distMm / 1000).toFixed(3)
-  const label = dim.textOverride ?? `${distM} m`
+  const label = dim.textOverride ?? `${distMm} mm`
 
   const midX = (os.x + oe.x) / 2
   const midY = (os.y + oe.y) / 2

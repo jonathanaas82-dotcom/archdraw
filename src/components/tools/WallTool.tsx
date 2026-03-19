@@ -187,7 +187,7 @@ export default function WallTool({ onRequestDialog, dialogConfirmed, onDialogHan
           <Text
             x={(toolState.startPoint.x + toolState.currentPoint.x) / 2}
             y={(toolState.startPoint.y + toolState.currentPoint.y) / 2 - 16 / scale}
-            text={`${(previewLength / 1000).toFixed(3)} m`}
+            text={`${previewLength} mm`}
             fontSize={12 / scale}
             fill="#fff"
             align="center"
