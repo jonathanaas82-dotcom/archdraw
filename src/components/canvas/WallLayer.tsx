@@ -25,14 +25,6 @@ function WallShape({ wall }: WallShapeProps): React.ReactElement {
   const midX = (start.x + end.x) / 2
   const midY = (start.y + end.y) / 2
 
-  // Perpendicular offset for label (above the wall centerline)
-  const dx = end.x - start.x
-  const dy = end.y - start.y
-  const len = Math.sqrt(dx * dx + dy * dy)
-  const offsetPx = (wall.thicknessMm / 2 + 80) / scale
-  const nx = len > 0 ? (-dy / len) * offsetPx : 0
-  const ny = len > 0 ? (dx / len) * offsetPx : 0
-
   const fontSize = 10 / scale
   const arrowSize = 5 / scale
   const strokeW = 0.8 / scale
@@ -62,13 +54,13 @@ function WallShape({ wall }: WallShapeProps): React.ReactElement {
         dash={[6 / scale, 3 / scale]}
         listening={false}
       />
-      {/* Length label */}
+      {/* Length label — centered on wall */}
       <Text
-        x={midX + nx}
-        y={midY + ny}
+        x={midX}
+        y={midY}
         text={label}
         fontSize={fontSize}
-        fill="#cccccc"
+        fill="#ffffff"
         align="center"
         offsetX={label.length * fontSize * 0.3}
         offsetY={fontSize / 2}
