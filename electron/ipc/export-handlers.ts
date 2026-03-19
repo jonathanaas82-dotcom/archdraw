@@ -13,4 +13,15 @@ export function registerExportHandlers(): void {
     fs.writeFileSync(result.filePath, Buffer.from(base64, 'base64'))
     return result.filePath
   })
+
+  ipcMain.handle('export:saveDxf', async (_event, content: string, suggestedName?: string) => {
+    const result = await dialog.showSaveDialog({
+      title: 'Eksporter som DXF',
+      defaultPath: suggestedName ?? 'tegning.dxf',
+      filters: [{ name: 'DXF-fil', extensions: ['dxf'] }],
+    })
+    if (result.canceled || !result.filePath) return null
+    fs.writeFileSync(result.filePath, content, 'utf-8')
+    return result.filePath
+  })
 }

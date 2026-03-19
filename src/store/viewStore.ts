@@ -11,6 +11,8 @@ interface ViewState {
   is3DVisible: boolean
   viewMode: '2d-only' | 'split' | '3d-only'
   stageRef: Konva.Stage | null
+  currentStoreyId: string
+  storeyHeight: number   // mm, default 2400
 
   setScale: (scale: number) => void
   setOffset: (x: number, y: number) => void
@@ -20,6 +22,8 @@ interface ViewState {
   toggle3DView: () => void
   resetView: () => void
   setStageRef: (stage: Konva.Stage | null) => void
+  setCurrentStorey: (id: string) => void
+  setStoreyHeight: (mm: number) => void
 }
 
 export const useViewStore = create<ViewState>((set) => ({
@@ -32,6 +36,8 @@ export const useViewStore = create<ViewState>((set) => ({
   is3DVisible: false,
   viewMode: '2d-only',
   stageRef: null,
+  currentStoreyId: 'storey-1',
+  storeyHeight: 2400,
 
   setScale: (scale) => set({ scale: Math.min(Math.max(scale, 0.05), 20) }),
   setOffset: (offsetX, offsetY) => set({ offsetX, offsetY }),
@@ -46,4 +52,6 @@ export const useViewStore = create<ViewState>((set) => ({
     }),
   resetView: () => set({ scale: 1, offsetX: 0, offsetY: 0 }),
   setStageRef: (stageRef) => set({ stageRef }),
+  setCurrentStorey: (currentStoreyId) => set({ currentStoreyId }),
+  setStoreyHeight: (storeyHeight) => set({ storeyHeight }),
 }))

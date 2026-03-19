@@ -1,0 +1,64 @@
+.panel {
+  width: 200px;
+  background: #252526;
+  border-left: 1px solid #3e3e3e;
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #4fc3f7;
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.catBtn {
+  background: #2d2d2d;
+  border: 1px solid #444;
+  color: #bbb;
+  padding: 3px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.catBtn:hover { background: #333; color: #fff; }
+.active { background: #094771; border-color: #007acc; color: #fff; }
+
+.grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.symbolBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.symbolBtn:hover { background: #2d2d2d; border-color: #007acc; }
+
+.symName { font-size: 11px; }
+.symSize { font-size: 9px; color: #666; }

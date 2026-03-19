@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react'
 import Toolbar from './components/tools/Toolbar'
 import DrawingCanvas from './components/canvas/DrawingCanvas'
 import CalculationPanel from './components/panels/CalculationPanel'
+import LayerPanel from './components/panels/LayerPanel'
+import SymbolLibrary from './components/panels/SymbolLibrary'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useViewStore } from './store/viewStore'
 import styles from './App.module.css'
@@ -29,6 +31,8 @@ export default function App(): React.ReactElement {
           </Suspense>
         )}
         <CalculationPanel />
+        <LayerPanel />
+        <SymbolLibrary onSelect={(id) => console.log('Symbol valgt:', id)} />
       </div>
       <div className={styles.statusbar}>
         Klar — Bruk scrollhjul for zoom, midtknapp for pan

@@ -47,3 +47,15 @@
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+.label { font-size: 10px; color: #888; }
+.heightInput {
+  width: 58px;
+  background: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  color: #ccc;
+  padding: 3px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+.unit { font-size: 10px; color: #666; }

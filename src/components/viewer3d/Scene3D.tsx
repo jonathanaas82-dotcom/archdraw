@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useWallStore } from '../../store/wallStore'
+import { useViewStore } from '../../store/viewStore'
 import { WALL_TYPE_MAP } from '../../data/wallTypes'
 import { WallElement, DoorElement, WindowElement } from '../../types/drawing'
 import WallMesh from './WallMesh'
@@ -10,6 +11,7 @@ import OpeningMesh from './OpeningMesh'
 export default function Scene3D(): React.ReactElement {
   const { elements } = useDrawingStore()
   const { wallInstances } = useWallStore()
+  const { storeyHeight } = useViewStore()
   const { invalidate } = useThree()
 
   // Re-render 3D on demand whenever the 2D drawing store changes
@@ -29,7 +31,8 @@ export default function Scene3D(): React.ReactElement {
         const wallType = WALL_TYPE_MAP[instance?.wallTypeId ?? wall.wallTypeId]
         // Use the outermost layer's color as the 3D surface color
         const color = wallType?.layers[0]?.color ?? '#888888'
-        const height = instance?.height ?? 2400
+        // Per-instance height override takes precedence; fall back to storeyHeight from viewStore
+        const height = (instance as { height?: number } | undefined)?.height ?? storeyHeight
         return (
           <WallMesh key={wall.id} wall={wall} color={color} height={height} />
         )
@@ -40,7 +43,7 @@ export default function Scene3D(): React.ReactElement {
         const instance = wallInstances[wall.id]
         const wallType = WALL_TYPE_MAP[instance?.wallTypeId ?? wall.wallTypeId]
         const thickness = wallType?.totalThickness ?? wall.thicknessMm
-        const height = instance?.height ?? 2400
+        const height = (instance as { height?: number } | undefined)?.height ?? storeyHeight
         return (
           <OpeningMesh key={door.id} opening={door} wall={wall} wallThickness={thickness} wallHeight={height} />
         )
@@ -51,7 +54,7 @@ export default function Scene3D(): React.ReactElement {
         const instance = wallInstances[wall.id]
         const wallType = WALL_TYPE_MAP[instance?.wallTypeId ?? wall.wallTypeId]
         const thickness = wallType?.totalThickness ?? wall.thicknessMm
-        const height = instance?.height ?? 2400
+        const height = (instance as { height?: number } | undefined)?.height ?? storeyHeight
         return (
           <OpeningMesh key={win.id} opening={win} wall={wall} wallThickness={thickness} wallHeight={height} />
         )
