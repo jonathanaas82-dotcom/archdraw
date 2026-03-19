@@ -3,6 +3,7 @@ import { Layer, Circle } from 'react-konva'
 import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useViewStore } from '../../store/viewStore'
+import { useHistoryStore } from '../../store/historyStore'
 import { findNearestWall } from '../../utils/wallGeometry'
 import { WallElement, WindowElement } from '../../types/drawing'
 
@@ -37,6 +38,8 @@ export default function WindowTool(): React.ReactElement {
       widthMm: 1200,
       sillHeightMm: 900,
     }
+    // Snapshot before mutation so this action can be undone
+    useHistoryStore.getState().pushSnapshot()
     addElement(win)
   }, [elements, scale, offsetX, offsetY, addElement, walls])
 

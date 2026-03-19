@@ -4,7 +4,7 @@ import { useDrawingStore } from '../../store/drawingStore'
 import { useWallStore } from '../../store/wallStore'
 import { WALL_TYPE_MAP } from '../../data/wallTypes'
 import { WallElement } from '../../types/drawing'
-import { flatPoints } from '../../utils/wallGeometry'
+import { flatPoints, applyMiterJoins } from '../../utils/wallGeometry'
 
 interface WallShapeProps {
   wall: WallElement
@@ -34,11 +34,13 @@ function WallShape({ wall }: WallShapeProps): React.ReactElement {
 
 export default function WallLayer(): React.ReactElement {
   const { elements } = useDrawingStore()
-  const walls = elements.filter((e): e is WallElement => e.type === 'wall')
+  const rawWalls = elements.filter((e): e is WallElement => e.type === 'wall')
+  // Apply miter joins for clean corner rendering (does not mutate store data)
+  const mitered = applyMiterJoins(rawWalls)
 
   return (
     <Layer listening={false}>
-      {walls.map((wall) => (
+      {mitered.map((wall) => (
         <WallShape key={wall.id} wall={wall} />
       ))}
     </Layer>

@@ -29,7 +29,7 @@ export default function DrawingCanvas(): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogResult, setDialogResult] = useState<{ wallTypeId: string; lengthMm: number | null } | null>(null)
 
-  const { scale, offsetX, offsetY, setScale, setOffset } = useViewStore()
+  const { scale, offsetX, offsetY, setScale, setOffset, setStageRef } = useViewStore()
   const { activeTool } = useToolStore()
   const { activeWallTypeId } = useWallStore()
   const { screenToWorld } = useCanvasCoords()
@@ -37,6 +37,13 @@ export default function DrawingCanvas(): React.ReactElement {
   // Track pan state in a ref for synchronous access during mouse events
   const isPanning = useRef(false)
   const lastPos = useRef({ x: 0, y: 0 })
+
+  // Register stage in viewStore so other components (e.g. Toolbar) can access it for PNG export
+  useEffect(() => {
+    if (stageRef.current) setStageRef(stageRef.current)
+    return () => setStageRef(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stageRef.current])
 
   // Resize observer — keeps Stage sized to its container
   useEffect(() => {

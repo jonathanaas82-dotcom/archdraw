@@ -4,6 +4,7 @@ import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useWallStore } from '../../store/wallStore'
 import { useViewStore } from '../../store/viewStore'
+import { useHistoryStore } from '../../store/historyStore'
 import { buildWallPolygon, snapToGrid, distance } from '../../utils/wallGeometry'
 import { WALL_TYPE_MAP } from '../../data/wallTypes'
 import { Point2D } from '../../types/drawing'
@@ -54,6 +55,9 @@ export default function WallTool({ onRequestDialog, dialogConfirmed, onDialogHan
     const id = `wall-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
     const element = buildWallPolygon(start, end, wallType.totalThickness, wallTypeId, id)
     const dist = Math.round(distance(start, end))
+    // Snapshot before mutation so this action can be undone
+    const { pushSnapshot } = useHistoryStore.getState()
+    pushSnapshot()
     addElement(element)
     addWallInstance({ id, wallTypeId, length: dist, height: 2400 })
   }, [addElement, addWallInstance])

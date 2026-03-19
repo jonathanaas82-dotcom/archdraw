@@ -3,6 +3,7 @@ import { Layer, Circle } from 'react-konva'
 import Konva from 'konva'
 import { useDrawingStore } from '../../store/drawingStore'
 import { useViewStore } from '../../store/viewStore'
+import { useHistoryStore } from '../../store/historyStore'
 import { findNearestWall } from '../../utils/wallGeometry'
 import { WallElement, DoorElement } from '../../types/drawing'
 
@@ -38,6 +39,8 @@ export default function DoorTool(): React.ReactElement {
       openingAngle: 90,
       flipSide: false,
     }
+    // Snapshot before mutation so this action can be undone
+    useHistoryStore.getState().pushSnapshot()
     addElement(door)
   }, [elements, scale, offsetX, offsetY, addElement, walls])
 

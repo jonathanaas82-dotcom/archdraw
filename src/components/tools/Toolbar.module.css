@@ -42,3 +42,8 @@
   border-color: #007acc;
   color: #fff;
 }
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

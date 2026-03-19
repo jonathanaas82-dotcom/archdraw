@@ -1,7 +1,9 @@
 import React from 'react'
 import { useToolStore } from '../../store/toolStore'
 import { useViewStore } from '../../store/viewStore'
+import { useHistoryStore } from '../../store/historyStore'
 import { ToolType } from '../../types/tools'
+import { exportToPng } from '../../utils/export'
 import { serializeProject, deserializeProject } from '../../utils/serialization'
 import styles from './Toolbar.module.css'
 
@@ -17,6 +19,7 @@ const TOOLS: { id: ToolType; label: string; shortcut: string }[] = [
 export default function Toolbar(): React.ReactElement {
   const { activeTool, setTool } = useToolStore()
   const { showGrid, snapToGrid, toggleGrid, toggleSnap } = useViewStore()
+  const { undo, redo, canUndo, canRedo } = useHistoryStore()
 
   const handleSave = async () => {
     const data = JSON.stringify(serializeProject('Mitt prosjekt'), null, 2)
@@ -34,14 +37,36 @@ export default function Toolbar(): React.ReactElement {
     }
   }
 
-  // PNG-eksport requires access to the Konva Stage ref from DrawingCanvas.
-  // The stage will be wired via a global ref in a future iteration.
   const handleExportPng = async () => {
-    console.log('PNG-eksport: kobles til Stage i neste iterasjon')
+    const stage = useViewStore.getState().stageRef
+    if (!stage) return
+    await exportToPng(stage, 'archdraw-tegning')
   }
 
   return (
     <div className={styles.toolbar}>
+      {/* Undo / Redo */}
+      <div className={styles.group}>
+        <button
+          className={styles.btn}
+          onClick={undo}
+          disabled={!canUndo()}
+          title="Angre (Ctrl+Z)"
+        >
+          ↩ Angre
+        </button>
+        <button
+          className={styles.btn}
+          onClick={redo}
+          disabled={!canRedo()}
+          title="Gjenta (Ctrl+Y)"
+        >
+          ↪ Gjenta
+        </button>
+      </div>
+
+      <div className={styles.divider} />
+
       <div className={styles.group}>
         {TOOLS.map((t) => (
           <button

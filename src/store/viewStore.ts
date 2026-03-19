@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import Konva from 'konva'
 
 interface ViewState {
   scale: number
@@ -9,6 +10,7 @@ interface ViewState {
   snapToGrid: boolean
   is3DVisible: boolean
   viewMode: '2d-only' | 'split' | '3d-only'
+  stageRef: Konva.Stage | null
 
   setScale: (scale: number) => void
   setOffset: (x: number, y: number) => void
@@ -17,6 +19,7 @@ interface ViewState {
   toggleSnap: () => void
   toggle3DView: () => void
   resetView: () => void
+  setStageRef: (stage: Konva.Stage | null) => void
 }
 
 export const useViewStore = create<ViewState>((set) => ({
@@ -28,6 +31,7 @@ export const useViewStore = create<ViewState>((set) => ({
   snapToGrid: true,
   is3DVisible: false,
   viewMode: '2d-only',
+  stageRef: null,
 
   setScale: (scale) => set({ scale: Math.min(Math.max(scale, 0.05), 20) }),
   setOffset: (offsetX, offsetY) => set({ offsetX, offsetY }),
@@ -41,4 +45,5 @@ export const useViewStore = create<ViewState>((set) => ({
       return { viewMode: next, is3DVisible: next !== '2d-only' }
     }),
   resetView: () => set({ scale: 1, offsetX: 0, offsetY: 0 }),
+  setStageRef: (stageRef) => set({ stageRef }),
 }))

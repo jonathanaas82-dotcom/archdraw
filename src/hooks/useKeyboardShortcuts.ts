@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useToolStore } from '../store/toolStore'
 import { useViewStore } from '../store/viewStore'
+import { useHistoryStore } from '../store/historyStore'
 import { serializeProject, deserializeProject } from '../utils/serialization'
 
 export function useKeyboardShortcuts(): void {
@@ -14,6 +15,12 @@ export function useKeyboardShortcuts(): void {
 
       // Ctrl-modified shortcuts
       if (e.ctrlKey) {
+        const { undo, redo } = useHistoryStore.getState()
+        // Undo: Ctrl+Z (without Shift)
+        if (e.key === 'z' && !e.shiftKey) { undo(); e.preventDefault(); return }
+        // Redo: Ctrl+Y or Ctrl+Shift+Z
+        if (e.key === 'y' || (e.key === 'z' && e.shiftKey)) { redo(); e.preventDefault(); return }
+
         switch (e.key.toLowerCase()) {
           case 's':
             e.preventDefault()

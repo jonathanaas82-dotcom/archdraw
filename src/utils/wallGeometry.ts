@@ -1,5 +1,118 @@
 import { Point2D, WallElement } from '../types/drawing'
 
+// ---------------------------------------------------------------------------
+// Miter corner join helpers
+// ---------------------------------------------------------------------------
+
+/** Find the intersection of two infinite lines defined by a point and direction. */
+function lineIntersection(
+  p1: Point2D, d1: Point2D,
+  p2: Point2D, d2: Point2D
+): Point2D | null {
+  const cross = d1.x * d2.y - d1.y * d2.x
+  if (Math.abs(cross) < 0.001) return null  // parallel lines
+
+  const dx = p2.x - p1.x
+  const dy = p2.y - p1.y
+  const t = (dx * d2.y - dy * d2.x) / cross
+  return { x: p1.x + t * d1.x, y: p1.y + t * d1.y }
+}
+
+/**
+ * Extract edge directions and corners from a 4-point wall polygon.
+ * Point layout (clockwise): [p0=outer-start, p1=outer-end, p2=inner-end, p3=inner-start]
+ */
+function getWallEdges(wall: WallElement) {
+  const [p0, p1, p2, p3] = wall.points
+  return {
+    // Outer edge runs from p0 to p1
+    outerDir: { x: p1.x - p0.x, y: p1.y - p0.y },
+    // Inner edge runs from p3 to p2 (same direction as outer)
+    innerDir: { x: p2.x - p3.x, y: p2.y - p3.y },
+    outerStart: p0,
+    outerEnd: p1,
+    innerStart: p3,
+    innerEnd: p2,
+  }
+}
+
+/**
+ * Apply miter joins to a set of walls.  For every pair of walls whose
+ * centerline endpoints are within `snapDistanceMm` of each other, the shared
+ * corner is adjusted so that the outer and inner edges of both walls meet at
+ * a clean miter intersection instead of overlapping or leaving a gap.
+ *
+ * Returns a new array of wall elements (original elements are not mutated).
+ */
+export function applyMiterJoins(
+  walls: WallElement[],
+  snapDistanceMm = 50
+): WallElement[] {
+  // Deep-copy points so we don't mutate the store values
+  const updated = walls.map((w) => ({
+    ...w,
+    points: [...w.points] as [Point2D, Point2D, Point2D, Point2D],
+  }))
+
+  for (let i = 0; i < updated.length; i++) {
+    for (let j = i + 1; j < updated.length; j++) {
+      const a = updated[i]
+      const b = updated[j]
+
+      const aEnds = [
+        { t: 'start' as const, cl: a.centerline.start },
+        { t: 'end'   as const, cl: a.centerline.end   },
+      ]
+      const bEnds = [
+        { t: 'start' as const, cl: b.centerline.start },
+        { t: 'end'   as const, cl: b.centerline.end   },
+      ]
+
+      for (const ae of aEnds) {
+        for (const be of bEnds) {
+          const d = distance(ae.cl, be.cl)
+          if (d > snapDistanceMm) continue
+
+          // These two walls meet — compute the miter intersection
+          const aEdges = getWallEdges(a)
+          const bEdges = getWallEdges(b)
+
+          const outerIntersect = lineIntersection(
+            aEdges.outerStart, aEdges.outerDir,
+            bEdges.outerStart, bEdges.outerDir
+          )
+          const innerIntersect = lineIntersection(
+            aEdges.innerStart, aEdges.innerDir,
+            bEdges.innerStart, bEdges.innerDir
+          )
+
+          if (!outerIntersect || !innerIntersect) continue
+
+          // Update the end-corner of wall A
+          if (ae.t === 'end') {
+            updated[i].points[1] = outerIntersect  // outer-end
+            updated[i].points[2] = innerIntersect  // inner-end
+          } else {
+            updated[i].points[0] = outerIntersect  // outer-start
+            updated[i].points[3] = innerIntersect  // inner-start
+          }
+
+          // Update the end-corner of wall B
+          if (be.t === 'start') {
+            updated[j].points[0] = outerIntersect  // outer-start
+            updated[j].points[3] = innerIntersect  // inner-start
+          } else {
+            updated[j].points[1] = outerIntersect  // outer-end
+            updated[j].points[2] = innerIntersect  // inner-end
+          }
+        }
+      }
+    }
+  }
+
+  return updated
+}
+
 function perpendicular(dx: number, dy: number, length: number): { px: number; py: number } {
   const len = Math.sqrt(dx * dx + dy * dy)
   if (len === 0) return { px: 0, py: length }
