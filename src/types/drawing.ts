@@ -23,4 +23,21 @@ export interface WallElement extends BaseElement {
   length: number  // mm, cached from centerline calculation
 }
 
-export type DrawingElement = WallElement
+export interface DoorElement extends BaseElement {
+  type: 'door'
+  wallId: string          // id til veggen døren sitter i
+  positionAlongWall: number  // 0-1, relativ posisjon langs veggsenterlinjen
+  widthMm: number         // standard 900mm
+  openingAngle: number    // grader, 0-90, hvilken vei buen åpner
+  flipSide: boolean       // åpner mot innsiden eller utsiden
+}
+
+export interface WindowElement extends BaseElement {
+  type: 'window'
+  wallId: string
+  positionAlongWall: number  // 0-1
+  widthMm: number         // standard 1200mm
+  sillHeightMm: number    // karmstokkshøyde fra gulv, standard 900mm
+}
+
+export type DrawingElement = WallElement | DoorElement | WindowElement

@@ -3,7 +3,11 @@ import { Stage } from 'react-konva'
 import Konva from 'konva'
 import GridLayer from './GridLayer'
 import WallLayer from './WallLayer'
+import DoorLayer from './DoorLayer'
+import WindowLayer from './WindowLayer'
 import WallTool from '../tools/WallTool'
+import DoorTool from '../tools/DoorTool'
+import WindowTool from '../tools/WindowTool'
 import WallTypeDialog from '../panels/WallTypeDialog'
 import { useViewStore } from '../../store/viewStore'
 import { useToolStore } from '../../store/toolStore'
@@ -147,6 +151,8 @@ export default function DrawingCanvas(): React.ReactElement {
       >
         <GridLayer width={size.width / scale} height={size.height / scale} />
         <WallLayer />
+        <DoorLayer />
+        <WindowLayer />
         {activeTool === 'wall' && (
           <WallTool
             onRequestDialog={handleRequestDialog}
@@ -154,6 +160,8 @@ export default function DrawingCanvas(): React.ReactElement {
             onDialogHandled={() => setDialogResult(null)}
           />
         )}
+        {activeTool === 'door' && <DoorTool />}
+        {activeTool === 'window' && <WindowTool />}
       </Stage>
 
       <WallTypeDialog

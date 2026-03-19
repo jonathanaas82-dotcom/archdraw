@@ -8,8 +8,8 @@ const TOOLS: { id: ToolType; label: string; shortcut: string }[] = [
   { id: 'select', label: '↖ Velg', shortcut: 'V' },
   { id: 'pan', label: '✋ Pan', shortcut: 'H' },
   { id: 'wall', label: '▭ Vegg', shortcut: 'W' },
-  { id: 'door', label: 'Dor', shortcut: 'D' },
-  { id: 'window', label: 'Vindu', shortcut: 'U' },
+  { id: 'door', label: '[D] Dor', shortcut: 'D' },
+  { id: 'window', label: '[U] Vindu', shortcut: 'U' },
   { id: 'dimension', label: '↔ Mal', shortcut: 'M' },
 ]
 
