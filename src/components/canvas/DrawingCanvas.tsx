@@ -2,9 +2,14 @@ import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { Stage } from 'react-konva'
 import Konva from 'konva'
 import GridLayer from './GridLayer'
+import WallLayer from './WallLayer'
+import WallTool from '../tools/WallTool'
+import WallTypeDialog from '../panels/WallTypeDialog'
 import { useViewStore } from '../../store/viewStore'
 import { useToolStore } from '../../store/toolStore'
+import { useWallStore } from '../../store/wallStore'
 import { useCanvasCoords } from '../../hooks/useCanvasCoords'
+import { Point2D } from '../../types/drawing'
 import styles from './DrawingCanvas.module.css'
 
 export default function DrawingCanvas(): React.ReactElement {
@@ -14,8 +19,13 @@ export default function DrawingCanvas(): React.ReactElement {
   const [cursorWorld, setCursorWorld] = useState({ x: 0, y: 0 })
   const [isPanningState, setIsPanningState] = useState(false)
 
+  // Wall dialog state
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogResult, setDialogResult] = useState<{ wallTypeId: string; lengthMm: number | null } | null>(null)
+
   const { scale, offsetX, offsetY, setScale, setOffset } = useViewStore()
   const { activeTool } = useToolStore()
+  const { activeWallTypeId } = useWallStore()
   const { screenToWorld } = useCanvasCoords()
 
   // Track pan state in a ref for synchronous access during mouse events
@@ -101,6 +111,22 @@ export default function DrawingCanvas(): React.ReactElement {
     [activeTool]
   )
 
+  // Called by WallTool when the user clicks the first point
+  const handleRequestDialog = useCallback((_startPoint: Point2D) => {
+    setDialogOpen(true)
+  }, [])
+
+  // Called when user confirms the dialog
+  const handleDialogConfirm = useCallback((wallTypeId: string, lengthMm: number | null) => {
+    setDialogOpen(false)
+    setDialogResult({ wallTypeId, lengthMm })
+  }, [])
+
+  // Called when user cancels the dialog — also resets the tool via dialogResult staying null
+  const handleDialogCancel = useCallback(() => {
+    setDialogOpen(false)
+  }, [])
+
   const cursor = activeTool === 'pan' || isPanningState ? 'grab' : 'crosshair'
 
   return (
@@ -120,7 +146,22 @@ export default function DrawingCanvas(): React.ReactElement {
         style={{ cursor }}
       >
         <GridLayer width={size.width / scale} height={size.height / scale} />
+        <WallLayer />
+        {activeTool === 'wall' && (
+          <WallTool
+            onRequestDialog={handleRequestDialog}
+            dialogConfirmed={dialogResult}
+            onDialogHandled={() => setDialogResult(null)}
+          />
+        )}
       </Stage>
+
+      <WallTypeDialog
+        open={dialogOpen}
+        initialTypeId={activeWallTypeId}
+        onConfirm={handleDialogConfirm}
+        onCancel={handleDialogCancel}
+      />
 
       {/* Coordinate and zoom display in status strip */}
       <div className={styles.coords}>

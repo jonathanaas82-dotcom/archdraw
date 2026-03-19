@@ -20,6 +20,7 @@ export interface WallElement extends BaseElement {
   thicknessMm: number
   wallTypeId: string
   storeyId: string
+  length: number  // mm, cached from centerline calculation
 }
 
 export type DrawingElement = WallElement
